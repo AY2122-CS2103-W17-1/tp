@@ -125,7 +125,7 @@ public class Person {
             tags.forEach(builder::append);
         }
         builder.append("; Remark: ")
-        .append(getRemark());
+                .append(getRemark());
         return builder.toString();
     }
 
