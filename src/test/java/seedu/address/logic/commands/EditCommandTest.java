@@ -36,7 +36,10 @@ public class EditCommandTest {
 
     @Test
     public void execute_allFieldsSpecifiedUnfilteredList_success() {
-        Person editedPerson = new PersonBuilder().build();
+        // edit command cannot change remark, but starting person Alice already has remark
+        // set expectation to same remark.
+        Person editedPerson = new PersonBuilder()
+                .withRemark(model.getFilteredPersonList().get(0).getRemark().value).build();
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder(editedPerson).build();
         EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON, descriptor);
 
