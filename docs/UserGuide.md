@@ -448,7 +448,7 @@ Examples:
 * `batch delete where/name LIKE A%` 
   * Deletes all persons whose name start with A (case-sensitive)
 * `batch Edit p/87438806 where/ p/Phone = 87438807 `
-    * edit contact with phone matches keyword 87438807 change to 87438806
+    * Edit contact with phone matches keyword 87438807 change to 87438806
 
 ### Operate on Contacts within Range : `range`
 
@@ -483,7 +483,7 @@ Format: `COMMAND_A && COMMAND_B`
 * A valid command must be supplied before and after the `&&` operator, otherwise the command will fail
 Examples:
 * `editAppointment 6 l/360 && listAppointments`
-    * Edits the 6th to 10th appointment in the list of appointments to have a duration of 6 hours. Then list all appointments in the Schedule
+    * Edits the 6th to 10th appointments in the list of appointments to have a duration of 6 hours. Then list all appointments in the Schedule
 * `deleteAppointment 2 && addAppointment n/Contract Signing With Charlie d/22-10-2022 t/16:30 p/1 l/300`
     * Deletes the 2nd appointment in the list of appointments.
       Creates a 5-hour appointment named "Contract Signing With Charlie" on 22nd Oct 2022 at 4:30 PM, associated with the first person in the contact list
