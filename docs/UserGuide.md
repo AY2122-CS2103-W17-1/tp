@@ -404,10 +404,90 @@ Examples:
 * `importcsv n/2`
   * Reads from CSV treating the 2nd row as names, 3rd row as phone numbers, 4th row as email address, 5th row as tagged.
 
-
 ### Archiving data files `[coming in v2.0]`
 
 _Details coming soon ..._
+
+###Extension on Find contact: `find` `t/`
+
+Locates persons by different search types
+
+Format: `t/SEARCH_TYPE k/KEYWORD [MORE_KEYWORDS]`
+
+* The search is case-insensitive. e.g. hans will match Hans
+* The order of the keywords does not matter. e.g. Hans Bo will match Bo Hans
+* `SEARCH_TYPE` must match one of the following:
+  * Name
+  * Address
+  * Phone
+  * Email
+* Persons matching at least one keyword will be returned
+
+Examples:
+* `find t/Address k/Garden`
+    * Lists all contact with address contains keyword “Garden”
+* `find t/Phone k/87438807`
+    * Lists all contact with phone matches keyword “87438807”
+
+### Batch and Range Commands
+
+### Fetch contacts by Condition Clause: `where/`
+
+If the given condition is satisfied, it returns a group of contacts
+
+Format: `batch COMMAND where/CONDITION`
+
+* The commands include list, edit, delete
+* The condition is expressed using logical operators
+  * `>`  (compare integer)
+  * `<`  (compare integer)
+  * `=` (compare integer or string value)
+  * `LIKE`
+    * `%`  wildcard start or ends with pattern
+  * `NOT` Combines with other logical operators to perform negation
+
+Examples:
+* `batch delete where/ n/NAME LIKE %a`
+  * Lists all contacts name that start with letter “a”
+* `batch Edit p/87438806 where/ p/Phone = 87438807 `
+    * edit contact with phone matches keyword 87438807 change to 87438806
+
+### Index Range Actions: `from/` `to/`
+
+Perform actions on a group of contacts
+
+Format: `range COMMAND from/INDEX to/INDEX`
+
+* Performs the specified COMMAND on all contacts between the specified range of `INDEX_FROM` to `INDEX_TO`
+* The INDEX parameter must be a **positive integer**, and refers to the index number shown in the **displayed contact list**
+* Both INDEX must be valid, and `INDEX_FROM` must be less than `INDEX_TO` must be supplied, otherwise the command will perform no operation
+* `COMMAND` must be a valid command
+* The Resultant effect of the command is dependent on the performed action
+
+Examples:
+* `range edit e/johndoe@example.com from/6 to/10`
+    * Edits the 6th to 10th contacts in the Address Book to the email of johndoe@example.com
+* `range delete from/2 to/3`
+    * Deletes the 2nd and 3rd contacts in the Address Book
+
+### Chained command actions: `&&`
+
+Perform actions on a group of contacts
+
+Format: `COMMAND_A && COMMAND_B`
+
+* Call multiple commands
+* Syntax of `COMMAND` provided must be correct
+* At least **Two** index must be supplied, otherwise the command will perform no operation
+
+Examples:
+* `editAppointment 6 l/360 && listAppointments`
+    * Edits the 6th to 10th appointment in the list of appointments to have a duration of 6 hours. Then list all appointments in the Schedule
+* `deleteAppointment 2 && addAppointment n/Contract Signing With Charlie d/22-10-2022 t/16:30 p/1 l/300`
+    * Deletes the 2nd appointment in the list of appointments.
+      Creates a 5-hour appointment named “Contract Signing With Charlie” on 22nd Oct 2022 at 4:30 PM, associated with the first person in the contact list
+
+
 
 --------------------------------------------------------------------------------------------------------------------
 
