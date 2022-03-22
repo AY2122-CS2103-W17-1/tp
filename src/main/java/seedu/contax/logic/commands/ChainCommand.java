@@ -2,6 +2,7 @@ package seedu.contax.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import seedu.contax.logic.commands.exceptions.CommandException;
@@ -25,21 +26,32 @@ public class ChainCommand extends Command {
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
+        List<CommandResult> commandResultList = new ArrayList<>();
         for (Command command:commands) {
-            command.execute(model);
+            commandResultList.add(command.execute(model));
         }
-        return commands.get(commands.size() - 1).execute(model);
+        StringBuilder resultOutput = new StringBuilder();
+        for (CommandResult result: commandResultList) {
+            resultOutput.append(result.getFeedbackToUser()).append("\n");
+        }
+        return new CommandResult(resultOutput.toString());
     }
 
     @Override
     public boolean equals(Object other) {
         if (other instanceof ChainCommand) {
             for (int i = 0; i < commands.size(); i++) {
-                if (!commands.get(i).equals(((ChainCommand) other).commands.get(i))) {
+                if (((ChainCommand) other).commands.size() != 0) {
+                    if (!commands.get(i).equals(((ChainCommand) other).commands.get(i))) {
+                        return false;
+                    }
+                } else {
                     return false;
                 }
             }
+            return true;
+        } else {
+            return false;
         }
-        return true;
     }
 }

@@ -1,0 +1,50 @@
+@startuml
+!include style.puml
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":BatchCommandParser" as BatchCommandParser LOGIC_COLOR
+participant ":BatchCommand"  as BatchCommand LOGIC_COLOR
+participant ":Index"  as Index LOGIC_COLOR
+
+box end
+
+box Model MODEL_COLOR_T1
+participant ":Person"  as Person MODEL_COLOR
+box end
+
+activate LogicManager
+create BatchCommandParser
+LogicManager -> BatchCommandParser: parseCommand()
+activate BatchCommandParser
+
+create BatchCommand
+BatchCommandParser -> BatchCommand : parse()
+activate BatchCommand
+
+BatchCommand --> BatchCommandParser
+deactivate BatchCommand
+
+BatchCommandParser --> LogicManager
+deactivate BatchCommandParser
+
+LogicManager -> BatchCommand: execute()
+activate BatchCommand
+BatchCommand -> BatchCommand : matchInputStringToIndex()
+activate BatchCommand
+BatchCommand --> BatchCommand
+deactivate BatchCommand
+
+create Index
+BatchCommand -> Index : fromZeroBased()
+activate Index
+
+Index --> BatchCommand
+deactivate Index
+BatchCommand -> Person : getPersonMatchedIndex()
+activate Person
+
+Person --> BatchCommand
+deactivate Person
+return
+@enduml

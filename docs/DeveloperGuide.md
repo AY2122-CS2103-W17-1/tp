@@ -383,6 +383,38 @@ The sequence diagram is as follows:
 
 The exported file can be subsequently imported back into any other instance of ContaX, similar to the existing `.json` system of import/export.
 
+### Enhanced Find Logic
+
+The previous implementation of the find function is limited to only searching the name field. The enhancement to the feature allows users to search for `Person` objects by more attributes, including by the `phone`, `email` and `address` fields.
+This is done by creating a helper `SearchType` model within the `model.util` package and abstracting the original `NameConstrainsKeywordsPredicate` to form `ConstrainsKeywordsPredicate` then create different inherit of three different types of predicate.
+The sequence diagram is as follows:
+![Enhanced Find Logic](images/FindCommandSequenceDiagram.png)
+
+### Mass Operation Features
+
+#### Chain Command
+
+This extension allows the user to chain multiple commands together.
+
+:information_source: **Note:** A command failure may lead to the following commands being invalid (e.g. if create person failed, you cannot edit the newly created person), causing an exception to be thrown.
+
+The sequence diagram is as follows:
+![Chain Command](images/ChainCommandSequenceDiagram.png)
+
+#### Range Command
+
+This extension allows the user to perform range of commands based on `index`. During the conversion from user input to list of commands `from/INDEX to/INDEX` is essential for parsing to generate new commands. The validation for `INDEX` followed as original edit command index validation.
+
+#### Batch Command
+
+This extension allows the editing of `Person` objects that have attributes matching a specific value. Since this matching requires the objects to already exist, only edit and delete operations can be performed. The command translates the `Person` objects matching the condition into a series of indexes and executes the specified command on them sequentially.
+
+The sequence diagram is as follows:
+![Input to Index](images/BatchCommandInputToIndexSequenceDiagram.png)
+
+The multiple commands executed will return a `CommandResult` which contains a list of feedback messages of the results executed combined all together and returned as `feedbackToUser`
+
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation

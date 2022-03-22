@@ -1,0 +1,84 @@
+@startuml
+!include style.puml
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":FindPersonCommandParser" as FindPersonCommandParser LOGIC_COLOR
+participant ":FindPersonCommand" as FindPersonCommand LOGIC_COLOR
+participant ":ContainsKeywordsPredicate" as ContainsKeywordsPredicate LOGIC_COLOR
+participant ":CommandResult" as CommandResult LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant ":SearchType" as SearchType MODEL_COLOR
+participant ":Model" as Model MODEL_COLOR
+end box
+
+[-> LogicManager : execute()
+activate LogicManager
+
+LogicManager -> AddressBookParser : parseCommand()
+activate AddressBookParser
+
+create FindPersonCommandParser
+AddressBookParser -> FindPersonCommandParser
+activate FindPersonCommandParser
+
+FindPersonCommandParser --> AddressBookParser
+deactivate FindPersonCommandParser
+
+AddressBookParser -> FindPersonCommandParser : parse()
+activate FindPersonCommandParser
+
+create FindPersonCommand
+
+FindPersonCommandParser -> FindPersonCommand
+activate FindPersonCommand
+create SearchType
+FindPersonCommand -> SearchType: getValueMatchedSearchType()
+activate SearchType
+SearchType -> FindPersonCommand
+deactivate SearchType
+
+create ContainsKeywordsPredicate
+FindPersonCommand -> ContainsKeywordsPredicate: matchBySearchType()
+activate ContainsKeywordsPredicate
+
+ContainsKeywordsPredicate --> FindPersonCommand : f
+deactivate ContainsKeywordsPredicate
+
+FindPersonCommand --> FindPersonCommandParser : f
+deactivate FindPersonCommand
+
+FindPersonCommandParser --> AddressBookParser : f
+deactivate FindPersonCommandParser
+
+FindPersonCommandParser -[hidden]-> AddressBookParser
+destroy FindPersonCommandParser
+
+AddressBookParser --> LogicManager : f
+deactivate AddressBookParser
+
+LogicManager -> FindPersonCommand : execute()
+activate FindPersonCommand
+
+FindPersonCommand -> Model : updateFilteredPersonList()
+activate Model
+
+Model --> FindPersonCommand
+deactivate Model
+
+create CommandResult
+FindPersonCommand -> CommandResult
+activate CommandResult
+
+CommandResult --> FindPersonCommand
+deactivate CommandResult
+
+FindPersonCommand --> LogicManager : result
+deactivate FindPersonCommand
+
+[<--LogicManager
+deactivate LogicManager
+@enduml
